@@ -8,20 +8,20 @@ async function main() {
   const args = [name, symbol, to, TotalSupply];
   console.log("total supply is ", TotalSupply);
 
-  const PBToken = await ethers.getContractFactory("PBToken");
+  const PBToken = await ethers.getContractFactory("PBtoken");
   const pbtoken = await PBToken.deploy(name, symbol, to, TotalSupply);
   //console.log("pbtoken error", pbtoken);
   await pbtoken.deployed();
 
   console.log(`PB token address  ${pbtoken.address}`);
-  verify(pbtoken.address, args);
+  const ad = await verify(pbtoken.address, args);
 }
 async function verify(contractAddress: any, args: any) {
   try {
     await run("verify:verify", {
       address: contractAddress,
       constructorArguments: args,
-      contract: "contracts/PBToken.sol:PBToken",
+      contract: "contracts/PBtoken.sol:PBtoken",
     });
   } catch (error) {
     console.error(error);

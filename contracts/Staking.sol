@@ -7,16 +7,19 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract Staking  {
     mapping(address => uint256) private _stakedBalances;
     
-
     address private tokenAddress;
+    address public owner;
 
     uint256 totalStakedBalance;
      bool internal locked;
     event StakeChanged(address staker, uint256 newStakedBalance);
     event Withdraw(address stakeAddress,address toAddress,uint value);
+    event UpdateOwner(address oldOwner,address newOwner);
+    event Tokenchange(address owner,address tokenadd);
 
     constructor(address _token) {
         tokenAddress = _token;
+        owner=msg.sender;
     }
 
     modifier noReentrant() {
@@ -24,6 +27,18 @@ contract Staking  {
         locked = true;
         _;
         locked = false;
+    }
+    modifier onlyOwner() {
+        require(owner==msg.sender,"you are not a Owner");
+        _;
+    }
+    function updateTokenAddress(address tokenAdd) public onlyOwner{
+        tokenAddress=tokenAdd;
+        emit Tokenchange(msg.sender,tokenAdd);
+    }
+    function updateOwner(address newOwner) public onlyOwner{
+        owner=newOwner;
+        emit UpdateOwner(msg.sender,newOwner);
     }
 
     /**
@@ -85,3 +100,6 @@ contract Staking  {
     }
  
 }
+
+
+/// PBtoken address : 0x49Ca640A967Bc71A9eC1947CBe0840A0725A485F
